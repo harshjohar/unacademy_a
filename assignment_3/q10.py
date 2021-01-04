@@ -1,16 +1,21 @@
 h = int(input())
 
-for row in range(h):
-    for column in range(row + 1):
+def factorial(i):
+    result = 1
+    for i in range(1, i+1):
+        result *= i
+    return result
 
-        if column > row - column:
-            column = row - column
-        
-        result = 1
+def ncr(n, r):
+    answer = (factorial(n))/((factorial(n-r))*(factorial(r)))
+    return int(answer)
 
-        for i in range(column):
-            result = (result * (row - i) // (i + 1))
-
-        print(result, end = '  ')
+for i in range(h+1):
+    for space in range(h - i, 0, -1):
+        print(' ', end='')
+    for j in range(i+1):
+        print(ncr(i, j), end='  ')
 
     print()
+    
+    
