@@ -1,3 +1,5 @@
+# to calculate ncr
+
 def factorial(i):
     result = 1
     for i in range(1, i+1):
