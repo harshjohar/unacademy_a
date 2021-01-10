@@ -4,12 +4,12 @@ arr = []
 for i in range(d):
     c = int(input())
     if c == 0:
-        c = 1
+        continue
     arr.append(c)
 
 count = 0
 
-for j in range(d-1):
+for j in range(len(arr) - 1):
     if arr[j] * arr[j+1] < 0:
         count += 1
 
