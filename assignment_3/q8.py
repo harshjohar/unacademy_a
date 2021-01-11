@@ -1,17 +1,36 @@
 h = int(input())
 
-for i in range(h):
-    for space in range(h - i, 1, -1):
+j = 1
+a = h//2 + 1
+
+while j <= a:
+    t = 1
+    while t <= a - j:
         print(' ', end='')
-    for hash in range(i+1):
-        print('# ', end = '')
+        t += 1
+
+    i = 1
+    while i <= j:
+        print('*', end=' ')
+        i += 1
+    
+    j += 1
     print()
 
-for j in range(h):
-    for spaceb in range(j+1):
-        print(' ', end = '')
-    for hashb in range(h - j, 1, -1):
-        print('# ', end = '')
+j = a - 1
+
+while j != 0:
+    t = 1
+    while t <= a - j:
+        print(' ', end='')
+        t += 1
+
+    i = 1
+    while i <= j:
+        print('*', end=' ')
+        i += 1
+    
+    j -= 1
     print()
 
 

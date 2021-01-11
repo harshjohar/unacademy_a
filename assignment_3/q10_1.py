@@ -15,6 +15,6 @@ for r in range(h+1):
             m *= n
 
         c = m/k
-        print(int(c), end=' ')
+        print(int(c), end='  ')
 
     print()

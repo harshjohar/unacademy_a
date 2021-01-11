@@ -1,5 +1,5 @@
 n = int(input())
-x = 1
+x = 0
 
 valid = True
 
