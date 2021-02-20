@@ -1,10 +1,14 @@
 rows, columns = map(int, input().split())
 maze = []
+alphabet = list(map(chr, range(97, 123)))
 for _ in range(rows):
     a = list(map(str, input()))
     maze.append(a)
 
-output = maze
+# output = [list(map(str, '#'*columns))]*rows
+output = maze[:]
+# output = [['#' for _ in range(columns) for i in range(rows)]]
+valid = True
 
 w = int(input())
 words = {}  # keys = length; values = word
@@ -74,52 +78,65 @@ def b_length(maze, row, column):
 # driver code
 for i in range(rows):
     for j in range(columns):
+        if valid:
+            # BOTH
+            if maze[i][j] == 'b':
+                h, v = b_length(maze, i, j)
+                for x in words:
+                    if x == h:
+                        req_word = words[x]
+                req_list = list(map(str, req_word))
+                for o in range(j, j+h):             
+                    output[i][o] = req_list[o-j]
+                    
 
-        # BOTH
-        if maze[i][j] == 'b':
-            h, v = b_length(maze, i, j)
-            for x in words:
-                if x == h:
-                    req_word = words[x]
-            req_list = list(map(str, req_word))
-            for o in range(j, j+h):
-                output[i][o] = req_list[o]
-
-            for x in words:
-                if x == v:
-                    req_word = words[x]
-            req_list = list(map(str, req_word))
-            for o in range(i, i+v):
-                output[o][j] = req_list[o]
-
-
-        # VERTICAL
-        elif maze[i][j] == 'c':
-            c = c_length(maze, i, j)
-            for x in words:
-                if x == c:
-                    req_word = words[x]
-            req_list = list(map(str, req_word))
-            for o in range(i, i+c):
-                output[o][j] = req_list[o-i] 
+                for x in words:
+                    if x == v:
+                        req_word = words[x]
+                req_list = list(map(str, req_word))
+                for o in range(i, i+v):                   
+                    output[o][j] = req_list[o-i]
+                    
 
 
-        # HORIZONTAL
-        elif maze[i][j] == 'r':
-            r = r_length(maze, i, j)
-            for x in words:
-                if x == r:
-                    req_word = words[x]
-            req_list = list(map(str, req_word))
-            for o in range(j, j+r):
-                output[i][o] = req_list[o-j]
+            # VERTICAL
+            elif maze[i][j] == 'c':
+                # print(i, j)
+                c = c_length(maze, i, j)
+                # print(words[4])
+                for x in words:
+                    if x == c:
+                        req_word = words[x]
+                        print(words[x])
+                req_list = list(map(str, req_word))
+                # print(req_list)
+                for o in range(i, i+c):
+                    output[o][j] = req_list[o-i]
+                    
+
+            # HORIZONTAL
+            elif maze[i][j] == 'r':
+                r = r_length(maze, i, j)
+                for x in words:
+                    if x == r:
+                        req_word = words[x]
+                req_list = list(map(str, req_word))
+                # print(req_list)
+                for o in range(j, j+r):                 
+                    output[i][o] = req_list[o-j]
+                    
 # print(words)
-for i in range(rows):
-    for j in range(columns):
-        print(output[i][j], end='')
-    print()
+
+if valid:
+    for i in range(rows):
+        for j in range(columns):
+            print(output[i][j], end='')
+        print()
+else:
+    print('Invalid')
 
 '''
 LEFT:
 Invalid
+FUCK! bug in c......
 '''
