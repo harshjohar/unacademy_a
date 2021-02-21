@@ -1,22 +1,21 @@
 rows, columns = map(int, input().split())
+
 maze = []
-alphabet = list(map(chr, range(97, 123)))
 for _ in range(rows):
-    a = list(map(str, input()))
-    maze.append(a)
+    maze.append(list(map(str, input())))
 
-# output = [list(map(str, '#'*columns))]*rows
-output = maze[:]
-# output = [['#' for _ in range(columns) for i in range(rows)]]
-valid = True
+# output = deepcopy(maze)
+# output is a maze of only {#} of same size as the original maze
+output = [['#']*rows for i in range(columns)]
 
+words_dict = {}
 w = int(input())
-words = {}  # keys = length; values = word
-for i in range(w):
-    word = input()
-    words[len(word)] = word
+for _ in range(w):
+    w = input()
+    words_dict[len(w)] = w
 
-def c_length(maze, row, column):
+def vertical_c(maze, row, column):
+    # returns the length of word starting with c and eding with b/c
     length = 0
     brackets = 0
     while brackets < 2 and row < len(maze):
@@ -30,7 +29,8 @@ def c_length(maze, row, column):
         row += 1
     return length
 
-def r_length(maze, row, column):
+def horizontal_r(maze, row, column):
+    # returns the length of word starting with r and eding with b/r
     length = 0
     brackets = 0
     while brackets < 2 and row < len(maze[0]):
@@ -44,25 +44,22 @@ def r_length(maze, row, column):
         column += 1
     return length
 
-def b_length(maze, row, column):
+def both_b(maze, row, column):
+    # returns the length of word(vertical) starting with b and eding with b/c and length of word(horizontal) starting with b and ending with b/r
+    length_horizontal, length_vertical = 0, 0
     tmp = column    # for reuse
-    length_horizantal = 0
-    length_vertical = 0
     brackets_h = 0
     brackets_v = 0
-
-    # horizontal
     while brackets_h < 2 and row < len(maze[0]):
         if maze[row][column] == '#':
             break
         elif maze[row][column] == 'r' or maze[row][column] == 'b':
             brackets_h += 1
-            length_horizantal += 1
+            length_horizontal += 1
         else:
-            length_horizantal += 1
+            length_horizontal += 1
         column += 1
-    
-    # vertical
+
     while brackets_v < 2 and row < len(maze):
         if maze[row][tmp] == '#':
             break
@@ -72,71 +69,60 @@ def b_length(maze, row, column):
         else:
             length_vertical += 1
         row += 1
+    return length_horizontal, length_vertical
 
-    return length_horizantal, length_vertical
-
-# driver code
 for i in range(rows):
     for j in range(columns):
-        if valid:
-            # BOTH
-            if maze[i][j] == 'b':
-                h, v = b_length(maze, i, j)
-                for x in words:
-                    if x == h:
-                        req_word = words[x]
-                req_list = list(map(str, req_word))
-                for o in range(j, j+h):             
-                    output[i][o] = req_list[o-j]
-                    
 
-                for x in words:
-                    if x == v:
-                        req_word = words[x]
-                req_list = list(map(str, req_word))
-                for o in range(i, i+v):                   
-                    output[o][j] = req_list[o-i]
-                    
+        # BOTH
+        if maze[i][j] == 'b':
+            b_horizontal, b_vertical = both_b(maze, i, j)
+            
+            # vertical
+            req_word = words_dict[b_horizontal]
+            if b_horizontal != 1:
+                for o in range(i, i+b_horizontal):
+                    if output[i][j] != '#':
+                        if req_word[o-i] != output[o][j]:
+                            print('Invalid')
+                            exit()
+                    output[o][j] = req_word[o-i]
+            
+            # horizontal
+            req_word = words_dict[b_vertical]
+            if b_vertical != 1:
+                for o in range(j, j+b_vertical):
+                    if output[i][j] != '#':
+                        if req_word[o-j] != output[i][o]:
+                            print('Invalid')
+                            exit()
+                    output[i][o] = req_word[o-j]
 
+        # VERTICAL
+        if maze[i][j] == 'c':
+            c_length = vertical_c(maze, i, j)
+            req_word = words_dict[c_length]
+            if c_length != 1:
+                for o in range(i, i + c_length):
+                    if output[o][j] != '#':
+                        if req_word[o-i] != output[o][j]:
+                            print('Invalid')
+                            exit()
+                    output[o][j] = req_word[o-i]
 
-            # VERTICAL
-            elif maze[i][j] == 'c':
-                # print(i, j)
-                c = c_length(maze, i, j)
-                # print(words[4])
-                for x in words:
-                    if x == c:
-                        req_word = words[x]
-                        print(words[x])
-                req_list = list(map(str, req_word))
-                # print(req_list)
-                for o in range(i, i+c):
-                    output[o][j] = req_list[o-i]
-                    
+        # HORIZONTAL
+        if maze[i][j] == 'r':
+            r_length = horizontal_r(maze, i, j)
+            req_word = words_dict[r_length]
+            if r_length != 1:
+                for o in range(j, j+r_length):
+                    if output[i][o] != '#':
+                        if req_word[o-i] != output[i][o]:
+                            print('Invalid')
+                            exit()
+                    output[i][o] = req_word[o-j]
 
-            # HORIZONTAL
-            elif maze[i][j] == 'r':
-                r = r_length(maze, i, j)
-                for x in words:
-                    if x == r:
-                        req_word = words[x]
-                req_list = list(map(str, req_word))
-                # print(req_list)
-                for o in range(j, j+r):                 
-                    output[i][o] = req_list[o-j]
-                    
-# print(words)
-
-if valid:
-    for i in range(rows):
-        for j in range(columns):
-            print(output[i][j], end='')
-        print()
-else:
-    print('Invalid')
-
-'''
-LEFT:
-Invalid
-FUCK! bug in c......
-'''
+for i in range(rows):
+    for j in range(columns):
+        print(output[i][j], end='')
+    print()
