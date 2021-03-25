@@ -1,0 +1,5 @@
+Special question:
+
+N x N board
+you have N queens
+arrange queens in such a way that no queen attacks other
